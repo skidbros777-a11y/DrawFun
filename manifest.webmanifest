@@ -1,0 +1,16 @@
+{
+  "name": "DrawFunllp — 108 Level Coloring Game",
+  "short_name": "DrawFunllp",
+  "description": "Free tap-to-color game with 108 levels, 40+ colors, a magic rainbow brush, sparkles and confetti.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#a18cd1",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
