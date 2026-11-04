@@ -18,3 +18,14 @@ function buildTrainHud(){
     el.appendChild(d);
   });
 }
+function drawToasts(){
+  const box=$('toasts');
+  box.innerHTML='';
+  G.toasts.forEach(function(t){
+    const d=document.createElement('div');
+    d.className='toast';
+    d.style.borderColor=t.col;
+    d.textContent=t.msg;
+    box.appendChild(d);
+  });
+}
