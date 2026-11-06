@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Tiny Toon Studio — 3D Animation Maker</title>
+<meta name="description" content="Create colorful original 3D preschool-style animations in your browser. Pose characters, make keyframes, preview and export video.">
+<style>
+:root{--bg:#101426;--panel:#1b223b;--panel2:#242e4b;--line:#3b496d;--text:#f5f7ff;--muted:#aab5d4;--pink:#ff6fae;--blue:#63d6ff;--yellow:#ffd766;--green:#67e6b2}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px system-ui,-apple-system,Segoe UI,sans-serif;height:100vh;overflow:hidden}button,select,input{font:inherit}button{border:0;border-radius:10px;padding:9px 12px;background:#37456b;color:white;font-weight:750;cursor:pointer}button:hover{filter:brightness(1.15)}button.primary{background:linear-gradient(120deg,#fb6da7,#9a75ff)}button.good{background:#258c72}button.warn{background:#9a405c}.app{height:100%;display:grid;grid-template-rows:56px 1fr 150px}.top{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line);background:#151b30}.brand{font-weight:950;font-size:17px;letter-spacing:.2px}.brand span{color:var(--pink)}.top .spacer{flex:1}.top small{color:var(--muted)}.main{min-height:0;display:grid;grid-template-columns:230px 1fr 250px}.side{overflow:auto;background:var(--panel);padding:12px;border-right:1px solid var(--line)}.right{border-right:0;border-left:1px solid var(--line)}h3{font-size:12px;color:#bdc8e7;text-transform:uppercase;letter-spacing:1px;margin:4px 0 10px}.section{padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid #34405e}.row{display:flex;align-items:center;gap:7px;margin:7px 0}.row>*{min-width:0}.row button{flex:1}.field{width:100%;background:#11182b;border:1px solid var(--line);color:white;border-radius:8px;padding:8px}.range{width:100%;accent-color:var(--pink)}.label{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:9px}.view{position:relative;min-width:0;min-height:0;background:radial-gradient(ellipse at 50% 25%,#42658b,#182844 65%,#13182b);overflow:hidden}#view{display:block;width:100%;height:100%}.hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#11182bd9;color:#e2e9ff;padding:7px 11px;border-radius:20px;font-size:11px;white-space:nowrap;pointer-events:none}.viewtitle{position:absolute;top:12px;left:14px;color:#e3edff;background:#10182b99;padding:7px 10px;border-radius:10px;font-weight:800}.list{display:grid;gap:6px}.item{background:var(--panel2);border:1px solid transparent;border-radius:9px;padding:8px;cursor:pointer}.item.sel{border-color:var(--pink)}.item small{display:block;color:var(--muted);margin-top:2px}.timeline{background:#171d32;border-top:1px solid var(--line);padding:10px 14px;display:grid;grid-template-columns:auto 1fr;gap:12px;min-height:0}.tlcontrols{display:flex;align-items:center;gap:6px}.trackbox{overflow:auto}.ruler{height:27px;display:flex;align-items:center;gap:0;color:var(--muted);font-size:10px;border-bottom:1px solid var(--line);min-width:650px}.ruler span{width:50px;text-align:left;flex:none}.tracks{min-width:650px}.track{height:28px;position:relative;border-bottom:1px solid #28324d}.trackname{position:absolute;left:0;top:5px;color:#dbe5ff;font-size:11px}.key{position:absolute;top:7px;width:10px;height:10px;border-radius:50%;background:var(--yellow);box-shadow:0 0 10px #ffd766;transform:translateX(-50%)}.playline{position:absolute;top:0;bottom:0;width:2px;background:var(--pink);z-index:2;pointer-events:none}.small{font-size:11px;color:var(--muted);line-height:1.5}.badge{display:inline-block;color:#a9f2d9;background:#1c564d;padding:3px 7px;border-radius:99px;font-size:10px}.toast{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:5;background:#11182bee;border:1px solid var(--line);border-radius:12px;padding:10px 15px;opacity:0;transition:opacity .2s;pointer-events:none}.toast.show{opacity:1}.colorrow{display:flex;gap:7px;flex-wrap:wrap}.swatch{width:27px;height:27px;border-radius:50%;border:2px solid #ffffff55;cursor:pointer}.swatch:hover{outline:2px solid white}.mobiletoggle{display:none}
+@media(max-width:850px){.main{grid-template-columns:190px 1fr}.right{display:none}.app{grid-template-rows:52px 1fr 145px}.side{padding:9px}.brand{font-size:14px}.top small{display:none}.timeline{padding:8px;grid-template-columns:1fr}.tlcontrols{justify-content:center}.small{font-size:10px}}
+@media(max-width:560px){.main{grid-template-columns:1fr}.side.left{position:absolute;z-index:4;left:8px;top:60px;width:175px;max-height:50vh;border:1px solid var(--line);border-radius:12px;background:#1b223bed}.side.right{display:none}.app{grid-template-rows:50px 1fr 132px}.top{gap:6px;padding:6px}.top button{padding:7px 9px;font-size:11px}.timeline{gap:4px}.viewtitle{font-size:11px}.hint{font-size:9px}.mobiletoggle{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand">✨ Tiny <span>Toon</span> Studio</div><small>Make little 3D stories</small><div class="spacer"></div><button id="newScene">New</button><button id="saveScene">Save</button><button id="loadScene">Open</button><button class="primary" id="exportVideo">Export video</button><input id="fileOpen" type="file" accept="application/json" hidden></header>
+<div class="main">
+<aside class="side left"><div class="section"><h3>Cast & props</h3><div class="row"><button class="primary" id="addKid">＋ Toon</button><button id="addProp">＋ Prop</button></div><div class="list" id="actorList"></div><p class="small">Click a toon in the list, then use the pose controls. Drag in the scene to orbit; scroll to zoom.</p></div><div class="section"><h3>Stage</h3><select class="field" id="stage"><option value="garden">Sunny garden</option><option value="cloud">Cloud kingdom</option><option value="candy">Candy meadow</option><option value="night">Starry night</option></select><div class="label"><span>Playback speed</span><span id="speedVal">1×</span></div><input class="range" id="speed" type="range" min="0.25" max="2" step="0.25" value="1"></div><div class="section"><h3>Quick actions</h3><div class="row"><button id="center">Center view</button><button id="duplicate">Duplicate</button></div><button class="warn" id="deleteActor" style="width:100%">Delete selected</button></div></aside>
+<main class="view"><div class="viewtitle">🎬 Scene preview <span class="badge">3D</span></div><div class="toast" id="toast"></div><div id="view"></div><div class="hint">Drag to orbit · Scroll to zoom · Add keyframes to animate</div></main>
+<aside class="side right"><div class="section"><h3>Selected toon</h3><div id="selName" class="small">Choose a toon to edit its pose.</div><div class="label"><span>Move left / right</span><span id="xVal">0</span></div><input class="range pose" data-axis="x" type="range" min="-4" max="4" step="0.1" value="0"><div class="label"><span>Move forward / back</span><span id="zVal">0</span></div><input class="range pose" data-axis="z" type="range" min="-4" max="4" step="0.1" value="0"><div class="label"><span>Turn</span><span id="rotVal">0°</span></div><input class="range pose" data-axis="rot" type="range" min="-180" max="180" step="1" value="0"><div class="label"><span>Wave arm</span><span id="waveVal">0°</span></div><input class="range pose" data-axis="wave" type="range" min="-90" max="90" step="1" value="0"></div><div class="section"><h3>Toon color</h3><div class="colorrow" id="colors"></div></div><p class="small">Tip: move the playhead, pose your toon, and press <b>＋ Key</b>. Add more poses later, then press Play.</p></aside>
+</div>
+<footer class="timeline"><div class="tlcontrols"><button id="play" class="good">▶ Play</button><button id="stop">■ Stop</button><button id="addKey" class="primary">＋ Key</button><span class="small" id="timeLabel">0.0s</span><span class="small">/ 10s</span></div><div class="trackbox"><div class="ruler" id="ruler"></div><div class="tracks" id="tracks"></div></div></footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const colors=[0xff668e,0xffb342,0x43c6f1,0x7cdb78,0xa67cff,0xffdf5d,0x55e0c1,0xffffff];
+const colorHex=c=>'#'+c.toString(16).padStart(6,'0');
+let scene,camera,renderer,clock,stageGroup,actors=[],selected=null,playing=false,playT=0,last=0,animSpeed=1,frameId=0;
+const DURATION=10, SAVE_NAME='tinyToonStudioScene';
+function toast(msg){const e=$('#toast');e.textContent=msg;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1800)}
+function sound(freq=600){try{const C=window.AudioContext||window.webkitAudioContext;const a=sound.ac||(sound.ac=new C());if(a.state==='suspended')a.resume();const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.08,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.16);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.17)}catch(e){}}
+function init(){
+ scene=new THREE.Scene();scene.background=new THREE.Color(0x9fdcf2);scene.fog=new THREE.Fog(0x9fdcf2,24,75);
+ camera=new THREE.PerspectiveCamera(42,1,.1,160);camera.position.set(10,9,15);
+ renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputEncoding=THREE.sRGBEncoding;$('#view').appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xe5f7ff,0x61708f,2.0));
+ const sun=new THREE.DirectionalLight(0xfff0cf,2.2);sun.position.set(-5,12,8);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
+ stageGroup=new THREE.Group();scene.add(stageGroup);clock=new THREE.Clock();
+ buildStage('garden');makeGround();addToon('Milo',colors[0],-1,0);addToon('Pip',colors[2],1,0);resize();setupUI();render();
+}
+function mat(c,rough=.7){return new THREE.MeshStandardMaterial({color:c,roughness:rough})}
+function box(w,h,d,c){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(c));m.castShadow=true;m.receiveShadow=true;return m}
+function sphere(r,c,ws=20,hs=14){const m=new THREE.Mesh(new THREE.SphereGeometry(r,ws,hs),mat(c));m.castShadow=true;return m}
+function makeGround(){const g=new THREE.Mesh(new THREE.PlaneGeometry(200,200),mat(0x73c96b));g.rotation.x=-Math.PI/2;g.position.y=-.08;g.receiveShadow=true;stageGroup.add(g)}
+function clearGroup(g){while(g.children.length){const o=g.children.pop();o.traverse?.(x=>{x.geometry?.dispose?.();if(x.material){(Array.isArray(x.material)?x.material:[x.material]).forEach(m=>m.dispose?.())}})}}
+function buildStage(kind){
+ clearGroup(stageGroup);makeGround();
+ const palettes={garden:[0x75cb71,0x7bd2fa],cloud:[0xc5edff,0xe8f6ff],candy:[0xffb0d0,0xffe5a2],night:[0x27315d,0x131a43]};
+ const [ground,sky]=palettes[kind]||palettes.garden;scene.background.setHex(sky);scene.fog.color.setHex(sky);
+ const floor=stageGroup.children[0];floor.material.color.setHex(ground);
+ // rolling hills, oversized flowers, candy/cloud scenery
+ for(let i=0;i<12;i++){const h=sphere(1.3+Math.random()*2,kind==='night'?0x38447c:(i%2?0x63bd69:0x8adb77),20,12);h.position.set((Math.random()-.5)*30,-.6,-8-Math.random()*18);h.scale.y=.45;stageGroup.add(h)}
+ for(let i=0;i<7;i++){
+  const x=(i-3)*3.5,z=-5-Math.random()*8;
+  const stem=box(.12,1.5,.12,0x48964b);stem.position.set(x,.75,z);stageGroup.add(stem);
+  const bloom=sphere(.55,[0xff80aa,0xffd84d,0xb18aff,0x62dafa][i%4]);bloom.position.set(x,1.65,z);stageGroup.add(bloom);
+  const center=sphere(.22,0xffe06b);center.position.set(x,1.65,z+.46);stageGroup.add(center);
+ }
+ // soft stylized clouds
+ for(let i=0;i<6;i++){const c=new THREE.Group();for(let j=0;j<4;j++){const p=sphere(.65,kind==='night'?0xa8b2de:0xffffff);p.position.set(j*.65,Math.random()*.25,0);c.add(p)}c.position.set(-14+i*5,7+(i%3),-12);stageGroup.add(c)}
+}
+function addToon(name,color,x,z){
+ const root=new THREE.Group();root.name=name;root.position.set(x,0,z);root.userData={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),name,color,keys:[],base:{x,y:0,z,rot:0,wave:0}};
+ const body=new THREE.Group();root.add(body);root.userData.body=body;
+ const torso=box(.95,1.2,.62,color);torso.position.y=1.55;body.add(torso);
+ const head=sphere(.68,0xffd0a7,24,18);head.position.y=2.62;body.add(head);
+ const hair=sphere(.65,color,20,12);hair.scale.set(1,.54,.9);hair.position.set(0,2.98,-.08);body.add(hair);
+ const eyeMat=new THREE.MeshBasicMaterial({color:0x24243c});
+ [-.23,.23].forEach(x=>{const e=new THREE.Mesh(new THREE.SphereGeometry(.065,10,8),eyeMat);e.position.set(x,2.68,.59);body.add(e)});
+ const smile=new THREE.Mesh(new THREE.TorusGeometry(.14,.025,6,18,Math.PI),new THREE.MeshBasicMaterial({color:0x9b4453}));smile.position.set(0,2.48,.59);body.add(smile);
+ const armMat=mat(color);const armL=new THREE.Group(),armR=new THREE.Group();
+ const al=box(.24,.9,.24,color);al.position.y=-.35;armL.add(al);armL.position.set(-.62,1.95,0);body.add(armL);
+ const ar=box(.24,.9,.24,color);ar.position.y=-.35;armR.add(ar);armR.position.set(.62,1.95,0);body.add(armR);root.userData.armR=armR;root.userData.armL=armL;
+ const legMat=mat(0x455178);[-.25,.25].forEach(x=>{const l=box(.29,.75,.35,0x455178);l.position.set(x,.38,0);body.add(l)});
+ // name plate
+ const cv=document.createElement('canvas');cv.width=256;cv.height=64;const cx=cv.getContext('2d');cx.fillStyle='#ffffff';cx.font='bold 34px system-ui';cx.textAlign='center';cx.fillText(name,128,44);
+ const tex=new THREE.CanvasTexture(cv);const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));sprite.scale.set(2, .5,1);sprite.position.y=3.65;root.add(sprite);
+ scene.add(root);actors.push(root);selectActor(root);buildActorList();return root;
+}
+function addProp(){const p=sphere(.48,0xffd45d);p.position.set(rand(-3,3),.55,-1-rand(0,3));p.userData={prop:true,name:'Ball',keys:[]};scene.add(p);toast('Added a bouncy ball prop');sound(760)}
+function rand(a,b){return a+Math.random()*(b-a)}
+function selectActor(a){selected=a;$$('.item').forEach(e=>e.classList.toggle('sel',e.dataset.id===a?.userData.id));if(!a)return;$('#selName').textContent=a.userData.name;const b=a.userData.base;$$('.pose').forEach(i=>{const v=i.dataset.axis==='rot'?b.rot:i.dataset.axis==='wave'?b.wave:b[i.dataset.axis];i.value=v||0});updatePoseLabels()}
+function buildActorList(){const el=$('#actorList');el.innerHTML='';actors.forEach(a=>{const d=document.createElement('div');d.className='item'+(a===selected?' sel':'');d.dataset.id=a.userData.id;d.innerHTML='🧒 '+a.userData.name+'<small>3D character · '+colorHex(a.userData.color)+'</small>';d.onclick=()=>selectActor(a);el.appendChild(d)})}
+function updatePoseLabels(){if(!selected)return;const b=selected.userData.base;$('#xVal').textContent=Number(b.x).toFixed(1);$('#zVal').textContent=Number(b.z).toFixed(1);$('#rotVal').textContent=Math.round(b.rot)+'°';$('#waveVal').textContent=Math.round(b.wave)+'°'}
+function applyBase(){if(!selected)return;const b=selected.userData.base;selected.position.set(b.x,0,b.z);selected.rotation.y=b.rot*Math.PI/180;selected.userData.armR.rotation.z=-b.wave*Math.PI/180;updatePoseLabels()}
+function addKey(){if(!selected)return;const t=Number($('#time').value);const b=selected.userData.base;const old=selected.userData.keys.find(k=>Math.abs(k.t-t)<.01);const k={t,x:b.x,y:0,z:b.z,rot:b.rot,wave:b.wave};if(old)Object.assign(old,k);else selected.userData.keys.push(k);selected.userData.keys.sort((a,b)=>a.t-b.t);renderTimeline();sound(880);toast('Keyframe added at '+t.toFixed(1)+'s')}
+function poseAt(a,t){const ks=a.userData.keys;if(!ks.length)return a.userData.base;if(t<=ks[0].t)return ks[0];if(t>=ks[ks.length-1].t)return ks[ks.length-1];let i=0;while(i<ks.length-1&&ks[i+1].t<t)i++;const A=ks[i],B=ks[i+1],f=(t-A.t)/(B.t-A.t);return {x:A.x+(B.x-A.x)*f,z:A.z+(B.z-A.z)*f,rot:A.rot+(B.rot-A.rot)*f,wave:A.wave+(B.wave-A.wave)*f}}
+function applyAnimation(t){actors.forEach(a=>{const p=poseAt(a,t);a.position.set(p.x,0,p.z);a.rotation.y=p.rot*Math.PI/180;a.userData.armR.rotation.z=-p.wave*Math.PI/180;a.position.y=Math.abs(Math.sin(t*5+a.position.x))*0.045})}
+function startPlay(){if(playing){playing=false;$('#play').textContent='▶ Play';return}playing=true;playT=Number($('#time').value);last=performance.now();$('#play').textContent='❚❚ Pause';sound(700)}
+function renderTimeline(){const ruler=$('#ruler'),tracks=$('#tracks');ruler.innerHTML='';tracks.innerHTML='';for(let i=0;i<=20;i++){const s=document.createElement('span');s.textContent=(i*.5).toFixed(1)+'s';ruler.appendChild(s)}actors.forEach(a=>{const tr=document.createElement('div');tr.className='track';const name=document.createElement('span');name.className='trackname';name.textContent=a.userData.name;tr.appendChild(name);a.userData.keys.forEach(k=>{const dot=document.createElement('i');dot.className='key';dot.style.left=(74+k.t*50)+'px';tr.appendChild(dot)});tracks.appendChild(tr)});updateTimeLine()}
+function updateTimeLine(){const t=Number($('#time').value);$('#timeLabel').textContent=t.toFixed(1)+'s';$$('.playline').forEach(x=>x.remove());const line=document.createElement('div');line.className='playline';line.style.left=(74+t*50)+'px';$('#tracks').appendChild(line)}
+function setupUI(){
+ $('#addKid').onclick=()=>addToon('Toon '+(actors.length+1),colors[actors.length%colors.length],rand(-2,2),rand(-1,1));$('#addProp').onclick=addProp;
+ $('#addKey').onclick=addKey;$('#play').onclick=startPlay;$('#stop').onclick=()=>{playing=false;playT=0;$('#play').textContent='▶ Play';$('#time').value=0;applyAnimation(0);updateTimeLine()};
+ $('#stage').onchange=e=>{buildStage(e.target.value);sound(600)};
+ $('#speed').oninput=e=>{$('#speedVal').textContent=e.target.value+'×';animSpeed=Number(e.target.value)};
+ $$('.pose').forEach(el=>el.oninput=()=>{if(!selected)return;const ax=el.dataset.axis,v=Number(el.value),b=selected.userData.base;if(ax==='rot')b.rot=v;else if(ax==='wave')b.wave=v;else b[ax]=v;applyBase()});
+ $('#time').oninput=()=>{updateTimeLine();if(!playing)applyAnimation(Number($('#time').value))};
+ $('#center').onclick=()=>{camera.position.set(10,9,15);camera.lookAt(0,1,0)};
+ $('#duplicate').onclick=()=>{if(selected)addToon(selected.userData.name+' copy',selected.userData.color,selected.position.x+1,selected.position.z)};
+ $('#deleteActor').onclick=()=>{if(!selected)return;scene.remove(selected);actors=actors.filter(a=>a!==selected);selected=actors[0]||null;buildActorList();renderTimeline();sound(280)};
+ colors.forEach(c=>{const d=document.createElement('div');d.className='swatch';d.style.background=colorHex(c);d.title=colorHex(c);d.onclick=()=>{if(!selected)return;selected.userData.color=c;const torso=selected.userData.body.children[0];torso.material.color.setHex(c);selected.userData.body.children[1+0].material.color.setHex(0xffd0a7);buildActorList()};$('#colors').appendChild(d)});
+ $('#saveScene').onclick=saveScene;$('#loadScene').onclick=()=>$('#fileOpen').click();$('#fileOpen').onchange=loadScene;
+ $('#newScene').onclick=()=>{if(confirm('Start a new scene? Unsaved work will be lost.')){actors.slice().forEach(a=>scene.remove(a));actors=[];addToon('Milo',colors[0],-1,0);addToon('Pip',colors[2],1,0);renderTimeline();toast('New scene ready')}};
+ $('#exportVideo').onclick=exportVideo;$('#btnFeatsClose').onclick=()=>$('#feats').classList.add('hidden');$('#btnFeats').onclick=()=>$('#feats').classList.remove('hidden');
+}
+function saveScene(){const data={version:1,stage:$('#stage').value,actors:actors.map(a=>({name:a.userData.name,color:a.userData.color,base:a.userData.base,keys:a.userData.keys}))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});download(blob,'tiny-toon-scene.json');toast('Scene saved as JSON')}
+function loadScene(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);actors.forEach(a=>scene.remove(a));actors=[];$('#stage').value=d.stage||'garden';buildStage($('#stage').value);(d.actors||[]).forEach(v=>{const a=addToon(v.name,v.color,v.base.x,v.base.z);a.userData.base=v.base;a.userData.keys=v.keys||[];applyBase()});renderTimeline();toast('Scene opened')}catch(err){toast('Could not read that scene file')} };r.readAsText(f);e.target.value=''}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function exportVideo(){if(!renderer.domElement.captureStream||!window.MediaRecorder){toast('Video recording is not supported in this browser. Try Chrome on desktop.');return}const stream=renderer.domElement.captureStream(30);let rec;try{rec=new MediaRecorder(stream,{mimeType:'video/webm'});}catch(e){rec=new MediaRecorder(stream)}const chunks=[];rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};rec.onstop=()=>{download(new Blob(chunks,{type:'video/webm'}),'tiny-toon-animation.webm');playing=false;$('#play').textContent='▶ Play';toast('Video downloaded!')};playT=0;playing=true;rec.start();toast('Recording 10-second preview…');setTimeout(()=>{if(rec.state==='recording')rec.stop()},10000)}
+function resize(){const box=$('#view');const w=box.clientWidth,h=box.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+function render(){frameId=requestAnimationFrame(render);const dt=Math.min(clock.getDelta(),.05);if(playing){playT+=dt*animSpeed;if(playT>DURATION){playT=0;playing=false;$('#play').textContent='▶ Play'}$('#time').value=playT;applyAnimation(playT);updateTimeLine()}else actors.forEach(a=>{if(a.userData.keys.length===0)a.position.y=.025+Math.sin(performance.now()/380+a.position.x)*.025});stageGroup.children.forEach(o=>{if(o.children?.length>2)o.position.x+=Math.sin(performance.now()/500+o.position.z)*.0005});renderer.render(scene,camera)}
+const featureNames=['3D colorful stage','Custom original toon characters','Add multiple characters','Add simple props','Pose position controls','Turn/rotation control','Wave-arm posing','10-second timeline','Timeline ruler','Add keyframes','Pose interpolation','Play and pause preview','Playback-speed control','Four stage themes','Garden stage','Cloud kingdom','Candy meadow','Starry night','Bright storybook lighting','Soft stage colors','Orbit camera','Zoom with mouse wheel','Mobile-friendly controls','Drag camera on touchscreens','Auto-save scene format download','Open saved scene JSON','Export WebM video where supported','Character color palette','Duplicate character','Delete character','Character list and selection','Per-toon key tracks','Keyframe markers','Reset camera view','New scene control','Browser audio feedback','Animated idle bounce','Friendly face details','Original generic designs','Responsive studio layout','No account required','No paid assets required','Works in a modern WebGL browser','Export scene JSON','Preview before export','Timeline playhead','Smooth pose transitions','Soft shadows','Decorative flowers','Rolling background hills','Floating clouds'];
+$('#featList').innerHTML=featureNames.map(x=>'<div>✦ '+x+'</div>').join('');
+$('#btnMute').onclick=()=>{SAVE.muted=!SAVE.muted;$('#btnMute').textContent='Sound: '+(SAVE.muted?'OFF':'ON');if(!SAVE.muted)sound(700)};
+$('#btnAvatar').onclick=()=>{if(selected){const i=(AVATAR_COLORS||colors).indexOf(selected.userData.color);const c=colors[(Math.max(0,i)+1)%colors.length];selected.userData.color=c;selected.userData.body.children[0].material.color.setHex(c);buildActorList();sound(720)}};
+$('#btnReset').onclick=()=>{localStorage.removeItem(SAVE_NAME);toast('Local scene autosave cleared')};
+// timeline range input
+const time=document.createElement('input');time.id='time';time.type='range';time.min='0';time.max=String(DURATION);time.step='.1';time.value='0';time.className='range';time.style.position='absolute';time.style.opacity='0';time.style.pointerEvents='none';document.body.appendChild(time);
+window.addEventListener('resize',resize);
+init();renderTimeline();
+})();
+</script>
+</body>
+</html>
